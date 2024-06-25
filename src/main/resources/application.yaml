@@ -8,3 +8,24 @@ spring:
     username: root
     password: mariadb
     driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+#    DBMS dialect setting
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
+    hibernate:
+#      ddl 수행시 어떻게 처리할 지 ...
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true # sql 로그에 줄 맞춤 해주는 설정
+    database: mysql
+
+
+logging:
+  level:
+    root: info
+    com:
+      spring:
+        jpastudy: debug
+    org:
+      hibernate:
+        SQL: debug
