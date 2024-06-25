@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = "nickName")
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,12 +23,15 @@ public class Product {
     @Column(name = "prod_id")
     private Long id; // PK
 
+
+    @Setter
     @Column(name = "prod_nm", length = 30, nullable = false)
     private String name; // 상품명
 
     @Column(name = "prod_price")
     private int price; // 상품 가격
 
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category; //상품 카테고리
@@ -50,4 +53,15 @@ public class Product {
         FOOD, FASHION, ELECTRONIC
     }
 
+
+    @PrePersist
+    public void prePersist() {
+        if (this.price == 0) {
+            this.price = 10000;
+
+        }
+        if (this.category == null) {
+            this.category = Category.FOOD;
+        }
+    }
 }
