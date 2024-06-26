@@ -34,4 +34,8 @@ public class Employee {
     private Department department;
 
 
+    public void changeDepartment(Department department) {
+        this.department = department;
+        department.getEmployees().add(this);
+    }
 }
