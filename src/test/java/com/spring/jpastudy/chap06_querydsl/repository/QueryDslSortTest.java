@@ -8,6 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,5 +106,24 @@ class QueryDslSortTest {
 
 //        System.out.println("pagedIdols = " + pagedIdols);
     }
+
+    @Test
+    @DisplayName("Spring의 Page 인터페이스를 통한 페이징 처리")
+    void pagingWithJpaTest() {
+        //given
+        Pageable pageInfo = PageRequest.of(1, 2);
+
+        //when
+        Page<Idol> pagedIdols = idolRepository.foundAllByPaging(pageInfo);
+
+        //then
+        assertNotNull(pagedIdols);
+        assertEquals(2, pagedIdols.getSize());
+
+        System.out.println("\n\n\n");
+        pagedIdols.getContent().forEach(System.out::println);
+        System.out.println("\n\n\n");
+    }
+
 
 }
