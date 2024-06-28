@@ -13,7 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.MariaDB106Dialect
     hibernate:
 #      ddl 수행시 어떻게 처리할 지 ...
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true # sql 로그에 줄 맞춤 해주는 설정
