@@ -2,6 +2,7 @@ package com.spring.jpastudy.chap06_querydsl.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.jpastudy.chap06_querydsl.entity.Album;
 import com.spring.jpastudy.chap06_querydsl.entity.Group;
@@ -87,6 +88,7 @@ class QueryDslSubQuery {
         Album album4 = new Album("ELEVEN", 2021, ive);
         Album album5 = new Album("LOVE DIVE", 2022, ive);
         Album album6 = new Album("OMG", 2023, newjeans);
+        Album album7 = new Album("AFTER LIKE", 2022, ive);
 
         albumRepository.save(album1);
         albumRepository.save(album2);
@@ -94,6 +96,8 @@ class QueryDslSubQuery {
         albumRepository.save(album4);
         albumRepository.save(album5);
         albumRepository.save(album6);
+        albumRepository.save(album7);
+
     }
 
 
@@ -187,5 +191,32 @@ class QueryDslSubQuery {
         }
 
     }
+    @Test
+    @DisplayName("특정 연도에 발매된 앨범 수가 2개 이상인 그룹 조회")
+    void testFindGroupsWithMultipleAlbumsInYear() {
+        int targetYear = 2022;
+
+        QAlbum subAlbum = new QAlbum("subAlbum");
+
+        // 서브쿼리: 각 그룹별로 특정 연도에 발매된 앨범 수를 계산
+        JPQLQuery<Long> subQuery = JPAExpressions
+                .select(subAlbum.group.id)
+                .from(subAlbum)
+                .where(subAlbum.releaseYear.eq(targetYear))
+                .groupBy(subAlbum.group.id)
+                .having(subAlbum.count().goe(2L));
+
+        // 메인쿼리: 서브쿼리의 결과와 일치하는 그룹 조회
+        List<Group> result = factory
+                .selectFrom(group)
+                .where(group.id.in(subQuery))
+                .fetch();
+
+        assertFalse(result.isEmpty());
+        for (Group g : result) {
+            System.out.println("\nGroup: " + g.getGroupName());
+        }
+    }
+
 
 }
